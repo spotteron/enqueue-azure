@@ -1,0 +1,5 @@
+*~
+bin/phpunit
+vendor
+var
+composer.lock
