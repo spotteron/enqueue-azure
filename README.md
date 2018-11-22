@@ -27,7 +27,7 @@ It creates a collection (a queue or topic) there. It's a FIFO system (First In F
 * With composer:
 
 ```bash
-$ composer require enqueue/azure-storage
+$ composer require assoconnect/enqueue-azure
 ```
 
 ## Create context
