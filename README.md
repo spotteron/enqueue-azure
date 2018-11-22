@@ -3,7 +3,6 @@
 
 Azure Storage transport is a messaging solution transport using Azure comptabile with [Enqueue](https://github.com/php-enqueue/enqueue-dev) 
 
-https://travis-ci.org/assoconnect/enqueue-azure.svg?branch=master
 [![Build Status](https://travis-ci.org/assoconnect/enqueue-azure.svg?branch=master)](https://travis-ci.org/assoconnect/enqueue-azure)
 
 ---
