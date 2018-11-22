@@ -1,4 +1,4 @@
-<p align="center"><img width="700" src="https://github.com/php-enqueue/logos/blob/master/LogoAssoConnect_bleu.png" alt="assoConnect logo" /></p>
+<p align="center"><img width="700" src="https://github.com/assoconnect/enqueue-azure/blob/master/LogoAssoConnect_bleu.png" alt="assoConnect logo" /></p>
 <h2 align="center">Azure Storage transport</h2>
 
 Azure Storage transport is a messaging solution transport using Azure comptabile with [Enqueue](https://github.com/php-enqueue/enqueue-dev) 
