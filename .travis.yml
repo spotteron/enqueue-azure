@@ -7,10 +7,8 @@ matrix:
   include:
     - php: 7.1
       sudo: false
-      env: UNIT_TESTS=true
     - php: 7.2
       sudo: false
-      env: UNIT_TESTS=true
 
 cache:
     directories:
@@ -22,6 +20,5 @@ install:
     - composer install
 
 script:
-    - PKG_PHP_CHANGED_FILES=`./bin/git-find-changed-php-files.sh "${TRAVIS_COMMIT_RANGE}"`
-    - if [ "$UNIT_TESTS" = true ]; then bin/phpunit --exclude-group=functional; fi  
+    - bin/phpunit 
 
