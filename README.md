@@ -1,9 +1,9 @@
-<h2 align="center">Supporting Enqueue</h2>
+<h2 align="center">Azure Storage transport</h2>
 
-Enqueue is an MIT-licensed open source project with its ongoing development made possible entirely by the support of community and our customers. If you'd like to join them, please consider:
+Azure Storage transport is a messaging solution transport using Azure comptabile with [Enqueue](https://github.com/php-enqueue/enqueue-dev) 
 
-- [Become a sponsor](https://www.patreon.com/makasim)
-- [Become our client](http://forma-pro.com/)
+https://travis-ci.org/assoconnect/enqueue-azure.svg?branch=master
+[![Build Status](https://travis-ci.org/assoconnect/enqueue-azure.svg?branch=master)](https://travis-ci.org/assoconnect/enqueue-azure)
 
 ---
 
