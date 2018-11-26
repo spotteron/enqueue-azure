@@ -30,7 +30,7 @@
         "docs": "https://github.com/assoconnect/enqueue-azure/blob/master/docs/index.md"
     },
     "autoload": {
-        "psr-4": { "Enqueue\\AzureStorage\\": "" },
+        "psr-4": { "Enqueue\\AzureStorage\\": "src/" },
         "exclude-from-classmap": [
             "/Tests/"
         ]

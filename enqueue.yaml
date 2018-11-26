@@ -1,0 +1,15 @@
+# config example for enqueue.yaml
+enqueue:
+    default:
+        transport:
+            dsn: 'azure:test'
+            connection_string: "DefaultEndpointsProtocol=https;AccountName=<accountname>;AccountKey=<accountkey>;BlobEndpoint=<blobendpoint>"
+            factory_service: vendor.enqueue.azure.factory
+        client:
+            traceable_producer: true
+            # azure write msg in <prefix><separator><app_name><separator><router_topic|router_queue> eg: assoconnect-app-queue
+            prefix:               assoconnect
+            separator:            '-' # this separator is accepted by azure
+            app_name:             app
+            router_topic:         topic
+            router_queue:         queue

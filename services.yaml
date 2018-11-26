@@ -1,0 +1,5 @@
+#services.yaml to register the azure driver
+services:
+    vendor.enqueue.azure.factory:
+        alias: Enqueue\AzureStorage\Driver\AzureStorageDriverFactory
+        public: true
