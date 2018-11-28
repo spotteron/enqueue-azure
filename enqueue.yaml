@@ -1,4 +1,9 @@
-# config example for enqueue.yaml
+# config example for enqueue
+services:
+    vendor.enqueue.azure.factory:
+        class: Enqueue\AzureStorage\Driver\AzureStorageDriverFactory
+        public: true
+
 enqueue:
     default:
         transport:
