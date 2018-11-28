@@ -7,7 +7,7 @@ services:
 enqueue:
     default:
         transport:
-            dsn: 'azure:test'
+            dsn: 'azure:'
             connection_string: "DefaultEndpointsProtocol=https;AccountName=<accountname>;AccountKey=<accountkey>;BlobEndpoint=<blobendpoint>"
             factory_service: vendor.enqueue.azure.factory
         client:
