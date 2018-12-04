@@ -40,7 +40,8 @@ class AzureStorageProducer implements Producer
         $options->setTimeToLiveInSeconds(intval($this->timeToLive / 1000));
         $options->setVisibilityTimeoutInSeconds($message->getVisibilityTimeout());
 
-        $result = $this->client->createMessage($destination->getName(), $message->getBody());
+        // Encoding of msg body as azure expect it
+        $result = $this->client->createMessage($destination->getName(), base64_encode($message->getBody()));
         $resultMessage = $result->getQueueMessage();
 
         $message->setMessageId($resultMessage->getMessageId());
