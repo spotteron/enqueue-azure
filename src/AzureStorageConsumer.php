@@ -93,7 +93,7 @@ class AzureStorageConsumer implements Consumer
 
         if (true === $requeue) {
             $producer = $this->context->createProducer();
-            $producer->send($this->queue, $message);
+            $producer->send($this->queue, $message, false);
         } else {
             $this->acknowledge($message);
         }

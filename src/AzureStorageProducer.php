@@ -31,7 +31,7 @@ class AzureStorageProducer implements Producer
      * @throws InvalidDestinationException if a client uses this method with an invalid destination
      * @throws InvalidMessageException     if an invalid message is specified
      */
-    public function send(Destination $destination, Message $message): void
+    public function send(Destination $destination, Message $message, bool $encode = true): void
     {
         InvalidDestinationException::assertDestinationInstanceOf($destination, AzureStorageDestination::class);
         InvalidMessageException::assertMessageInstanceOf($message, AzureStorageMessage::class);
@@ -40,8 +40,13 @@ class AzureStorageProducer implements Producer
         $options->setTimeToLiveInSeconds(intval($this->timeToLive / 1000));
         $options->setVisibilityTimeoutInSeconds($message->getVisibilityTimeout());
 
+        $messageBody = $message->getBody();
         // Encoding of msg body as azure expect it
-        $result = $this->client->createMessage($destination->getName(), base64_encode($message->getBody()));
+        if ($encode === true) {
+            $messageBody = base64_encode($messageBody);
+        }
+
+        $result = $this->client->createMessage($destination->getName(), $messageBody);
         $resultMessage = $result->getQueueMessage();
 
         $message->setMessageId($resultMessage->getMessageId());
