@@ -8,6 +8,8 @@ use Enqueue\AzureStorage\AzureStorageProducer;
 use Enqueue\AzureStorage\AzureStorageMessage;
 use Enqueue\AzureStorage\AzureStorageDestination;
 use Enqueue\Test\ClassExtensionTrait;
+use Interop\Queue\Exception\DeliveryDelayNotSupportedException;
+use Interop\Queue\Exception\PriorityNotSupportedException;
 use Interop\Queue\Producer;
 use Interop\Queue\Exception\InvalidDestinationException;
 use Interop\Queue\Exception\InvalidMessageException;
@@ -20,6 +22,11 @@ class AzureStorageProducerTest extends TestCase
 {
     use ClassExtensionTrait;
 
+    public function getProducer():AzureStorageProducer
+    {
+        return new AzureStorageProducer($this->createQueueRestProxyMock());
+    }
+
     public function testShouldImplementProducerInterface()
     {
         $this->assertClassImplements(Producer::class, AzureStorageProducer::class);
@@ -27,14 +34,14 @@ class AzureStorageProducerTest extends TestCase
 
     public function testCouldBeConstructedWithQueueRestProxy()
     {
-        $producer = new AzureStorageProducer($this->createQueueRestProxyMock());
+        $producer = $this->getProducer();
 
         $this->assertInstanceOf(AzureStorageProducer::class, $producer);
     }
 
     public function testThrowIfDestinationNotAzureStorageDestinationOnSend()
     {
-        $producer = new AzureStorageProducer($this->createQueueRestProxyMock());
+        $producer = $this->getProducer();
 
         $this->expectException(InvalidDestinationException::class);
         $exceptionMessage = 'The destination must be an instance of Enqueue\AzureStorage\AzureStorageDestination ';
@@ -45,7 +52,7 @@ class AzureStorageProducerTest extends TestCase
 
     public function testThrowIfMessageNotAzureStorageMessageOnSend()
     {
-        $producer = new AzureStorageProducer($this->createQueueRestProxyMock());
+        $producer = $this->getProducer();
 
         $this->expectException(InvalidMessageException::class);
         $exceptionMessage = 'The message must be an instance of Enqueue\AzureStorage\AzureStorageMessage ';
@@ -71,7 +78,7 @@ class AzureStorageProducerTest extends TestCase
         $queueRestProxy
             ->expects($this->once())
             ->method('createMessage')
-            ->with('aDestination', $message->getBody())
+            ->with('aDestination', $message->getMessageText())
             ->willReturn($createMessageResult)
         ;
         
@@ -134,5 +141,27 @@ class AzureStorageProducerTest extends TestCase
             ->method('getTimeNextVisible')
             ->willReturn('any');
         return $messageMock;
+    }
+
+    public function testShouldThrowExceptionOnSetDeliveryDelayWhenDeliveryStrategyIsNotSet()
+    {
+        $producer = $this->getProducer();
+
+        $this->assertSame($producer, $producer->setDeliveryDelay(null));
+
+        $this->expectException(DeliveryDelayNotSupportedException::class);
+        $this->expectExceptionMessage('The provider does not support delivery delay feature');
+        $producer->setDeliveryDelay(10000);
+    }
+
+    public function testShouldThrowExceptionOnSetPriorityWhenPriorityIsNotSet()
+    {
+        $producer = $this->getProducer();
+
+        $this->assertSame($producer, $producer->setPriority(null));
+
+        $this->expectException(PriorityNotSupportedException::class);
+        $this->expectExceptionMessage('The provider does not support priority feature');
+        $producer->setPriority(10000);
     }
 }

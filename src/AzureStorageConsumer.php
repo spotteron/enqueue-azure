@@ -55,18 +55,43 @@ class AzureStorageConsumer implements Consumer
         if ($messages) {
             $message = $messages[0];
 
-            $formattedMessage = new AzureStorageMessage();
-            $formattedMessage->setMessageId($message->getMessageId());
-            $formattedMessage->setBody($message->getMessageText());
-            $formattedMessage->setTimestamp($message->getInsertionDate()->getTimestamp());
-            $formattedMessage->setRedelivered($message->getDequeueCount() > 1);
+            $messageText = $message->getMessageText();
 
+            // Message is base64 encoded
+            $messageText = base64_decode($messageText);
+
+            // and JSON encoded
+            $messageArray = json_decode($messageText, true);
+
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                throw new \LogicException(sprintf(
+                    'Invalid JSON content for the message. Error was: "%s" and message content is: "%s".',
+                    json_last_error_msg(),
+                    $messageText
+                ));
+            }
+
+            if (false === array_key_exists('body', $messageArray)) {
+                throw new \LogicException('Missing body in the message.');
+            }
+
+            if (false === array_key_exists('properties', $messageArray)) {
+                throw new \LogicException('Missing properties in the message.');
+            }
+
+            $formattedMessage = new AzureStorageMessage();
+            $formattedMessage->setBody($messageArray['body']);
+            $formattedMessage->setProperties($messageArray['properties']);
             $formattedMessage->setHeaders([
                 'dequeue_count' => $message->getDequeueCount(),
                 'expiration_date' => $message->getExpirationDate(),
-                'pop_peceipt' => $message->getExpirationDate(),
+                'pop_receipt' => $message->getPopReceipt(),
                 'next_time_visible' => $message->getTimeNextVisible(),
             ]);
+            $formattedMessage->setMessageId($message->getMessageId());
+            $formattedMessage->setTimestamp($message->getInsertionDate()->getTimestamp());
+            $formattedMessage->setRedelivered($message->getDequeueCount() > 1);
+
 
             return $formattedMessage;
         } else {
@@ -95,10 +120,8 @@ class AzureStorageConsumer implements Consumer
     {
         InvalidMessageException::assertMessageInstanceOf($message, AzureStorageMessage::class);
 
-        if (true === $requeue) {
-            $producer = $this->context->createProducer();
-            $producer->send($this->queue, $message, false);
-        } else {
+        // We must acknowledge to remove the message from the queue
+        if (false === $requeue) {
             $this->acknowledge($message);
         }
     }

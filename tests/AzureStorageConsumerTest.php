@@ -198,7 +198,10 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->any())
             ->method('getTimestamp')
             ->willReturn(1542809366);
-        
+
+        $message = new AzureStorageMessage();
+        $message->setBody('aBody');
+
         $messageMock = $this->createMock(QueueMessage::class);
         $messageMock
             ->expects($this->any())
@@ -207,7 +210,7 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
         $messageMock
             ->expects($this->any())
             ->method('getMessageText')
-            ->willReturn('aBody');
+            ->willReturn($message->getMessageText());
         $messageMock
             ->expects($this->any())
             ->method('getInsertionDate')

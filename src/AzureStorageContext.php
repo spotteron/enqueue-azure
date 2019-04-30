@@ -74,7 +74,7 @@ class AzureStorageContext implements Context
      */
     public function createTemporaryQueue(): Queue
     {
-        throw new TemporaryQueueNotSupportedException();
+        throw TemporaryQueueNotSupportedException::providerDoestNotSupportIt();
     }
 
     public function createProducer(): Producer
@@ -99,7 +99,7 @@ class AzureStorageContext implements Context
      */
     public function createSubscriptionConsumer(): SubscriptionConsumer
     {
-        throw new SubscriptionConsumerNotSupportedException();
+        throw SubscriptionConsumerNotSupportedException::providerDoestNotSupportIt();
     }
 
     /**
@@ -107,7 +107,7 @@ class AzureStorageContext implements Context
      */
     public function purgeQueue(Queue $queue): void
     {
-        throw new PurgeQueueNotSupportedException();
+        throw PurgeQueueNotSupportedException::providerDoestNotSupportIt();
     }
 
     public function close(): void

@@ -11,10 +11,12 @@ use Enqueue\AzureStorage\AzureStorageMessage;
 use Enqueue\AzureStorage\AzureStorageProducer;
 use Enqueue\Test\ClassExtensionTrait;
 use Interop\Queue\Context;
+use Interop\Queue\Exception\PurgeQueueNotSupportedException;
 use Interop\Queue\Message;
 use Interop\Queue\Exception\InvalidDestinationException;
 use Interop\Queue\Exception\TemporaryQueueNotSupportedException;
 use Interop\Queue\Exception\SubscriptionConsumerNotSupportedException;
+use Interop\Queue\Queue;
 use MicrosoftAzure\Storage\Queue\QueueRestProxy;
 
 class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
@@ -77,6 +79,7 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
         $context = new AzureStorageContext($this->createQueueRestProxyMock());
 
         $this->expectException(TemporaryQueueNotSupportedException::class);
+        $this->expectExceptionMessage('The provider does not support temporary queue feature');
 
         $context->createTemporaryQueue();
     }
@@ -151,7 +154,9 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
         $context = new AzureStorageContext($this->createQueueRestProxyMock());
 
         $this->expectException(SubscriptionConsumerNotSupportedException::class);
-        $this->assertInstanceOf(AzureStorageConsumer::class, $context->createSubscriptionConsumer());
+        $this->expectExceptionMessage('The provider does not support subscription consumer.');
+
+        $context->createSubscriptionConsumer();
     }
 
     /**
@@ -160,5 +165,15 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
     private function createQueueRestProxyMock()
     {
         return $this->createMock(QueueRestProxy::class);
+    }
+
+    public function testShouldReturnNotSupportedPurgeQueue()
+    {
+        $context = new AzureStorageContext($this->createQueueRestProxyMock());
+
+        $this->expectException(PurgeQueueNotSupportedException::class);
+        $this->expectExceptionMessage('The provider does not support purge queue.');
+
+        $context->purgeQueue($this->createMock(Queue::class));
     }
 }
