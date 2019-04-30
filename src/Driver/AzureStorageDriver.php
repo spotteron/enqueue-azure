@@ -1,6 +1,5 @@
 <?php
 
-// namespace Enqueue\Client\Driver;
 namespace Enqueue\AzureStorage\Driver;
 
 use Enqueue\AzureStorage\AzureStorageContext;

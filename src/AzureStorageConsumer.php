@@ -52,7 +52,7 @@ class AzureStorageConsumer implements Consumer
         $listMessagesResult = $this->client->listMessages($this->queue->getQueueName(), $options);
         $messages = $listMessagesResult->getQueueMessages();
 
-        if($messages) {
+        if ($messages) {
             $message = $messages[0];
 
             $formattedMessage = new AzureStorageMessage();
@@ -81,7 +81,11 @@ class AzureStorageConsumer implements Consumer
     {
         InvalidMessageException::assertMessageInstanceOf($message, AzureStorageMessage::class);
 
-        $this->client->deleteMessage($this->queue->getQueueName(), $message->getMessageId(), $message->getHeader('pop_receipt'));
+        $this->client->deleteMessage(
+            $this->queue->getQueueName(),
+            $message->getMessageId(),
+            $message->getHeader('pop_receipt')
+        );
     }
 
     /**

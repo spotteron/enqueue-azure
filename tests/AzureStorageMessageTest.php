@@ -66,5 +66,4 @@ class AzureStorageMessageTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(['reply_to' => 'theQueueName'], $message->getHeaders());
     }
-
 }

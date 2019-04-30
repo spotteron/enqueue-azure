@@ -111,5 +111,6 @@ class AzureStorageContext implements Context
     }
 
     public function close(): void
-    {}
+    {
+    }
 }

@@ -16,5 +16,4 @@ class AzureStorageConnectionFactoryTest extends TestCase
     {
         $this->assertClassImplements(ConnectionFactory::class, AzureStorageConnectionFactory::class);
     }
-
 }

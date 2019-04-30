@@ -26,7 +26,6 @@ class AzureStorageDriverFactory implements ConnectionFactoryFactoryInterface
         \Enqueue\Client\Resources::addDriver(AzureStorageDriver::class, ['azure'], [], ['assoconnect/enqueue-azure']);
 
         $azureKey = $config['connection_string'];
-        $factory = new AzureStorageConnectionFactory($azureKey);
-        return $factory;
+        return new AzureStorageConnectionFactory($azureKey);
     }
 }

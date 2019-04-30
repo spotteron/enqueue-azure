@@ -37,7 +37,9 @@ class AzureStorageProducerTest extends TestCase
         $producer = new AzureStorageProducer($this->createQueueRestProxyMock());
 
         $this->expectException(InvalidDestinationException::class);
-        $this->expectExceptionMessage('The destination must be an instance of Enqueue\AzureStorage\AzureStorageDestination but got Enqueue\Null\NullQueue.');
+        $exceptionMessage = 'The destination must be an instance of Enqueue\AzureStorage\AzureStorageDestination ';
+        $exceptionMessage .= 'but got Enqueue\Null\NullQueue.';
+        $this->expectExceptionMessage($exceptionMessage);
         $producer->send(new NullQueue('aQueue'), new AzureStorageMessage());
     }
 
@@ -46,7 +48,9 @@ class AzureStorageProducerTest extends TestCase
         $producer = new AzureStorageProducer($this->createQueueRestProxyMock());
 
         $this->expectException(InvalidMessageException::class);
-        $this->expectExceptionMessage('The message must be an instance of Enqueue\AzureStorage\AzureStorageMessage but it is Enqueue\Null\NullMessage.');
+        $exceptionMessage = 'The message must be an instance of Enqueue\AzureStorage\AzureStorageMessage ';
+        $exceptionMessage .= 'but it is Enqueue\Null\NullMessage.';
+        $this->expectExceptionMessage($exceptionMessage);
         $producer->send(new AzureStorageDestination('aQueue'), new NullMessage());
     }
 

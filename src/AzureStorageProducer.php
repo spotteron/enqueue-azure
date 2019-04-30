@@ -66,8 +66,9 @@ class AzureStorageProducer implements Producer
      */
     public function setDeliveryDelay(int $deliveryDelay = null): Producer
     {
-        if (null !== $deliveryDelay)
+        if (null !== $deliveryDelay) {
             throw new DeliveryDelayNotSupportedException();
+        }
     }
 
     /**
@@ -83,8 +84,9 @@ class AzureStorageProducer implements Producer
      */
     public function setPriority(int $priority = null): Producer
     {
-        if (null !== $priority)
+        if (null !== $priority) {
             throw new PriorityNotSupportedException();
+        }
     }
 
     /**

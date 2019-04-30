@@ -28,7 +28,11 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
     public function testCouldBeConstructedWithContextAndDestinationAndPreFetchCountAsArguments()
     {
         $restProxy = $this->createQueueRestProxyMock();
-        new AzureStorageConsumer($restProxy, new AzureStorageDestination('aQueue'), new AzureStorageContext($restProxy));
+        new AzureStorageConsumer(
+            $restProxy,
+            new AzureStorageDestination('aQueue'),
+            new AzureStorageContext($restProxy)
+        );
     }
 
     public function testShouldReturnDestinationSetInConstructorOnGetQueue()
@@ -60,7 +64,11 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
             ->willReturn($listMessagesResultMock)
         ;
 
-        $consumer = new AzureStorageConsumer($azureMock, new AzureStorageDestination('aQueue'), new AzureStorageContext($azureMock));
+        $consumer = new AzureStorageConsumer(
+            $azureMock,
+            new AzureStorageDestination('aQueue'),
+            new AzureStorageContext($azureMock)
+        );
 
         $this->assertNull($consumer->receiveNoWait());
         $this->assertNull($consumer->receiveNoWait());
@@ -70,7 +78,11 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
     public function testShouldDoNothingOnAcknowledge()
     {
         $restProxy = $this->createQueueRestProxyMock();
-        $consumer = new AzureStorageConsumer($restProxy, new AzureStorageDestination('aQueue'), new AzureStorageContext($restProxy));
+        $consumer = new AzureStorageConsumer(
+            $restProxy,
+            new AzureStorageDestination('aQueue'),
+            new AzureStorageContext($restProxy)
+        );
 
         $consumer->acknowledge(new AzureStorageMessage());
     }
@@ -78,7 +90,11 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
     public function testShouldDoNothingOnReject()
     {
         $restProxy = $this->createQueueRestProxyMock();
-        $consumer = new AzureStorageConsumer($restProxy, new AzureStorageDestination('aQueue'), new AzureStorageContext($restProxy));
+        $consumer = new AzureStorageConsumer(
+            $restProxy,
+            new AzureStorageDestination('aQueue'),
+            new AzureStorageContext($restProxy)
+        );
 
         $consumer->reject(new AzureStorageMessage());
     }
@@ -117,7 +133,11 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
             ->willReturn($createMessageResultMock)
         ;
  
-        $consumer = new AzureStorageConsumer($azureMock, new AzureStorageDestination('aQueue'), new AzureStorageContext($azureMock));
+        $consumer = new AzureStorageConsumer(
+            $azureMock,
+            new AzureStorageDestination('aQueue'),
+            new AzureStorageContext($azureMock)
+        );
 
         $receivedMessage = $consumer->receiveNoWait();
 
@@ -149,7 +169,11 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
             ->willReturn($listMessagesResultMock)
         ;
 
-        $consumer = new AzureStorageConsumer($azureMock, new AzureStorageDestination('aQueue'), new AzureStorageContext($azureMock));
+        $consumer = new AzureStorageConsumer(
+            $azureMock,
+            new AzureStorageDestination('aQueue'),
+            new AzureStorageContext($azureMock)
+        );
 
         $receivedMessage = $consumer->receiveNoWait();
         $this->assertInstanceOf(AzureStorageMessage::class, $receivedMessage);
