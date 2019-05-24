@@ -50,7 +50,7 @@ class AzureStorageProducer implements Producer
         $message->setHeaders([
             'dequeueCount' => $resultMessage->getDequeueCount(),
             'expirationDate' => $resultMessage->getExpirationDate(),
-            'popReceipt' => $resultMessage->getExpirationDate(),
+            'popReceipt' => $resultMessage->getPopReceipt(),
             'nextTimeVisible' => $resultMessage->getTimeNextVisible(),
         ]);
     }
