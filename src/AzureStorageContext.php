@@ -40,17 +40,23 @@ class AzureStorageContext implements Context
 
     public function createTopic(string $topicName): Topic
     {
+        $this->client->createQueue($topicName);
+
         return new AzureStorageDestination($topicName);
     }
 
     public function createQueue(string $queueName): Queue
     {
+        $this->client->createQueue($queueName);
+
         return new AzureStorageDestination($queueName);
     }
 
 
     /**
      * @param AzureStorageDestination $queue
+     *
+     * @throws InvalidDestinationException Thrown, when destination is incompatible with the driver.
      */
     public function deleteQueue(Queue $queue): void
     {
@@ -61,6 +67,8 @@ class AzureStorageContext implements Context
 
     /**
      * @param AzureStorageDestination $topic
+     *
+     * @throws InvalidDestinationException Thrown, when destination is incompatible with the driver.
      */
     public function deleteTopic(Topic $topic): void
     {
@@ -84,8 +92,10 @@ class AzureStorageContext implements Context
 
     /**
      * @param AzureStorageDestination $destination
+     *
      * @return Consumer
-     * @throws InvalidDestinationException
+     *
+     * @throws InvalidDestinationException Thrown, when destination is incompatible with the driver.
      */
     public function createConsumer(Destination $destination): Consumer
     {
