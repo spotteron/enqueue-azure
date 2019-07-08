@@ -4,7 +4,10 @@ declare(strict_types=1);
 namespace Enqueue\AzureStorage\Driver;
 
 use Enqueue\AzureStorage\AzureStorageConnectionFactory;
+use Enqueue\Client\Resources;
 use Enqueue\ConnectionFactoryFactoryInterface;
+use Interop\Queue\ConnectionFactory;
+use InvalidArgumentException;
 
 class AzureStorageDriverFactory implements ConnectionFactoryFactoryInterface
 {
@@ -17,15 +20,15 @@ class AzureStorageDriverFactory implements ConnectionFactoryFactoryInterface
      *
      *
      * @param string|array $config
+     *
      * @return AzureStorageConnectionFactory
      *
-     * @throws \InvalidArgumentException if invalid config provided
+     * @throws InvalidArgumentException if invalid config provided
      */
-    public function create($config) : \Interop\Queue\ConnectionFactory
+    public function create($config): ConnectionFactory
     {
-        \Enqueue\Client\Resources::addDriver(AzureStorageDriver::class, ['azure'], [], ['assoconnect/enqueue-azure']);
+        Resources::addDriver(AzureStorageDriver::class, ['azure'], [], ['assoconnect/enqueue-azure']);
 
-        $azureKey = $config['connection_string'];
-        return new AzureStorageConnectionFactory($azureKey);
+        return new AzureStorageConnectionFactory(AzureStorageConnectionFactory::transformConfiguration($config));
     }
 }
