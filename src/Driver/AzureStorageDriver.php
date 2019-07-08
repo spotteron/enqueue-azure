@@ -31,6 +31,6 @@ class AzureStorageDriver extends GenericDriver
     {
         $name = parent::createTransportQueueName($name, $prefix);
 
-        return str_replace(['.', '_'], ['-dot-', '--'], $name);
+        return str_replace(['.', '_'], ['-dot-', '-'], $name);
     }
 }
