@@ -162,7 +162,7 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
             ->method('deleteQueue')
             ->with($topic);
 
-        $context->deleteQueue($topic);
+        $context->deleteTopic($topic);
     }
 
     public function testShouldReturnNotSupportedSubscriptionConsumerInstance()
