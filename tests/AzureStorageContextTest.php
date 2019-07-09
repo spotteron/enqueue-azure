@@ -106,13 +106,15 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
 
     public function testShouldCreateConsumer()
     {
-        $context = new AzureStorageContext($this->createQueueRestProxyMock());
+        $context = new AzureStorageContext($this->createQueueRestProxyMock(), ['visibility_timeout' => 1]);
 
         $queue = $context->createQueue('aQueue');
 
+        /** @var AzureStorageConsumer $consumer */
         $consumer = $context->createConsumer($queue);
 
         $this->assertInstanceOf(AzureStorageConsumer::class, $consumer);
+        $this->assertEquals(1, $consumer->getVisibilityTimeout());
     }
 
     public function testThrowIfNotAzureStorageDestinationGivenOnDeleteQueue()
