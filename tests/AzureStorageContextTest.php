@@ -125,9 +125,16 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
 
     public function testShouldAllowDeleteQueue()
     {
-        $context = new AzureStorageContext($this->createQueueRestProxyMock());
+        $proxyMock = $this->createQueueRestProxyMock();
+        $context = new AzureStorageContext($proxyMock);
 
         $queue = $context->createQueue('aQueueName');
+
+        // Check, that delete queue command actually is invoked on client.
+        $proxyMock
+            ->expects($this->once())
+            ->method('deleteQueue')
+            ->with($queue);
 
         $context->deleteQueue($queue);
     }
@@ -142,9 +149,16 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
 
     public function testShouldAllowDeleteTopic()
     {
-        $context = new AzureStorageContext($this->createQueueRestProxyMock());
+        $proxyMock = $this->createQueueRestProxyMock();
+        $context = new AzureStorageContext($proxyMock);
 
         $topic = $context->createTopic('aTopicName');
+
+        // Check, that delete queue command actually is invoked on client.
+        $proxyMock
+            ->expects($this->once())
+            ->method('deleteQueue')
+            ->with($topic);
 
         $context->deleteQueue($topic);
     }
