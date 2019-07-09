@@ -34,8 +34,9 @@ class AzureStorageConnectionFactoryTest extends TestCase
      */
     public function testCreateContext(): void
     {
-        $dsn =
-            'azure:DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=bXlrZXk=;EndpointSuffix=core.windows.net';
+        $dsn = 'azure:DefaultEndpointsProtocol=https;'
+            . 'AccountName=myaccount;'
+            . 'AccountKey=bXlrZXk=;EndpointSuffix=core.windows.net';
         $factory = new AzureStorageConnectionFactory($dsn);
         $context = $factory->createContext();
         $this->assertInstanceOf(AzureStorageContext::class, $context);
@@ -111,104 +112,170 @@ class AzureStorageConnectionFactoryTest extends TestCase
     {
         return [
             'legacy-no-params' => [
-                'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                'DefaultEndpointsProtocol=https;'
+                . 'AccountName=myaccount;'
+                . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                . 'EndpointSuffix=core.windows.net',
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => null,
                 ],
             ],
             'legacy-params' => [
-                'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net?visibility_timeout=1&some_param=1',
+                'DefaultEndpointsProtocol=https;'
+                . 'AccountName=myaccount;'
+                . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                . 'EndpointSuffix=core.windows.net?visibility_timeout=1&some_param=1',
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => 1,
                     'some_param' => 1,
                 ],
             ],
             'dsn' => [
-                'azure:DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net?some_param=1&visibility_timeout=2',
+                'azure:DefaultEndpointsProtocol=https;'
+                . 'AccountName=myaccount;'
+                . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                . 'EndpointSuffix=core.windows.net?some_param=1&visibility_timeout=2',
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => 2,
                     'some_param' => 1,
                 ],
             ],
             'dsn-other-scheme' => [
-                'azure+storage+queue:DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net?some_param=1&visibility_timeout=2',
+                'azure+storage+queue:DefaultEndpointsProtocol=https;'
+                . 'AccountName=myaccount;'
+                . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                . 'EndpointSuffix=core.windows.net?some_param=1&visibility_timeout=2',
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => 2,
                     'some_param' => 1,
                 ],
             ],
             'params-no-timeout' => [
-                'azure:DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net?some_param=1',
+                'azure:DefaultEndpointsProtocol=https;'
+                . 'AccountName=myaccount;'
+                . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                . 'EndpointSuffix=core.windows.net?some_param=1',
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => null,
                     'some_param' => 1,
                 ],
             ],
             'array-no-params' => [
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                 ],
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => null,
                 ],
             ],
             'array-params' => [
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => 10,
                     'some_param' => 'test',
                 ],
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => 10,
                     'some_param' => 'test',
                 ],
             ],
             'array-dsn-non-empty' => [
                 [
-                    'dsn' => 'azure:DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'dsn' => 'azure:DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'some_param' => '',
                 ],
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => null,
                 ],
             ],
             'array-dsn-non-empty-other-scheme' => [
                 [
-                    'dsn' => 'azure+storage+queue:DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'dsn' => 'azure+storage+queue:DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'some_param' => '',
                 ],
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => null,
                 ],
             ],
             'array-dsn-schema-only' => [
                 [
                     'dsn' => 'azure:',
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => '1',
                 ],
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => 1,
                 ],
             ],
             'array-dsn-empty-with-connection-string' => [
                 [
                     'dsn' => '',
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => '1',
                 ],
                 [
-                    'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;EndpointSuffix=core.windows.net',
+                    'connection_string' => 'DefaultEndpointsProtocol=https;'
+                        . 'AccountName=myaccount;'
+                        . 'AccountKey=aBcDeFgHea/OT99L1234567CKbbtgRqS/dEfGh+A==;'
+                        . 'EndpointSuffix=core.windows.net',
                     'visibility_timeout' => 1,
                 ],
             ],
