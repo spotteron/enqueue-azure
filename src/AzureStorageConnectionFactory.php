@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Enqueue\AzureStorage;
 
+use Enqueue\Dsn\Dsn;
 use Interop\Queue\ConnectionFactory;
 use Interop\Queue\Context;
 use InvalidArgumentException;
@@ -27,6 +28,13 @@ class AzureStorageConnectionFactory implements ConnectionFactory
         $this->config = self::transformConfiguration($config);
     }
 
+    public function createContext(): Context
+    {
+        $client = QueueRestProxy::createQueueService($this->config['connection_string']);
+
+        return new AzureStorageContext($client, $this->config);
+    }
+
     /**
      * Transform configuration to match common format.
      *
@@ -43,20 +51,74 @@ class AzureStorageConnectionFactory implements ConnectionFactory
         ];
 
         if (is_string($config)) {
-            return array_replace_recursive($configProto, ['connection_string' => $config]);
+            $config = self::parseDsn($config);
+
+            if (empty($config['connection_string'])) {
+                throw new InvalidArgumentException('Configuration cannot be empty.');
+            }
+
+            return array_replace_recursive($configProto, $config);
         }
 
-        if (!is_array($config) || empty($config['connection_string'])) {
-            throw new InvalidArgumentException('Array config has to contain non empty "connection_string" key');
+        if (is_array($config)) {
+            if (isset($config['dsn'])) {
+                $parsed = array_replace_recursive($configProto, self::parseDsn($config['dsn']));
+
+                // Support for old usage in Enqueue bundle, when schema has been 'azure:'
+                // and all other parameters had to be passed
+                if (!empty($parsed['connection_string'])) {
+                    return $parsed;
+                }
+
+                unset($config['dsn']);
+            }
+
+            if (!empty($config['connection_string'])) {
+                return array_replace_recursive($configProto, $config);
+            }
+
+            throw new InvalidArgumentException('Array config has to contain non empty "connection_string" key.');
         }
 
-        return array_replace_recursive($configProto, $config);
+        throw new InvalidArgumentException('Configuration cannot be empty.');
     }
 
-    public function createContext(): Context
+    /**
+     * Parse DSN.
+     *
+     * @param string $dsn
+     *
+     * @return array
+     */
+    private static function parseDsn(string $dsn): array
     {
-        $client = QueueRestProxy::createQueueService($this->config['connection_string']);
+        // Scheme without transport prefix is used
+        if (false === strpos($dsn, ':')) {
+            $dsn = 'azure:' . $dsn;
+        }
 
-        return new AzureStorageContext($client, $this->config);
+        $parsed = Dsn::parseFirst($dsn);
+
+        // Tis place ignores coverage, as it seems impossible to invoke using Dsn class
+        // @codeCoverageIgnoreStart
+        if (!$parsed) {
+            throw new InvalidArgumentException('Invalid DSN provided.');
+        }
+        // @codeCoverageIgnoreEnd
+
+        // This is to support old installations, where dsn has been simply 'azure:'.
+        if (!$parsed->getPath()) {
+            return [];
+        }
+
+        $return = [
+            'connection_string' => $parsed->getPath()
+        ];
+
+        foreach ($parsed->getQueryBag()->toArray() as $key => $val) {
+            $return[$key] = $val;
+        }
+
+        return $return;
     }
 }
