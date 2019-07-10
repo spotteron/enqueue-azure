@@ -24,9 +24,17 @@ class AzureStorageContext implements Context
      */
     protected $client;
 
-    public function __construct(QueueRestProxy $client)
+    /**
+     * Configuration options.
+     *
+     * @var array
+     */
+    private $config;
+
+    public function __construct(QueueRestProxy $client, array $config = [])
     {
         $this->client = $client;
+        $this->config = $config;
     }
 
     public function createMessage(string $body = '', array $properties = [], array $headers = []): Message
@@ -101,7 +109,13 @@ class AzureStorageContext implements Context
     {
         InvalidDestinationException::assertDestinationInstanceOf($destination, AzureStorageDestination::class);
 
-        return new AzureStorageConsumer($this->client, $destination, $this);
+        $consumer = new AzureStorageConsumer($this->client, $destination, $this);
+
+        if (isset($this->config['visibility_timeout'])) {
+            $consumer->setVisibilityTimeout((int) $this->config['visibility_timeout']);
+        }
+
+        return $consumer;
     }
 
     /**
