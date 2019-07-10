@@ -122,7 +122,7 @@ class AzureStorageConnectionFactory implements ConnectionFactory
         }
 
         $return = [
-            self::KEY_CONNECTION_STRING => $parsed->getPath()
+            self::KEY_CONNECTION_STRING => $parsed->getPath(),
         ];
 
         foreach ($parsed->getQueryBag()->toArray() as $key => $val) {
