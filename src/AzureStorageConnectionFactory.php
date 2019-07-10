@@ -12,6 +12,16 @@ use MicrosoftAzure\Storage\Queue\QueueRestProxy;
 class AzureStorageConnectionFactory implements ConnectionFactory
 {
     /**
+     * Configuration key for connection string.
+     */
+    private const KEY_CONNECTION_STRING = 'connection_string';
+    
+    /**
+     * Configuration key for DSN.
+     */
+    private const KEY_DSN = 'dsn';
+    
+    /**
      * Factory configuration.
      *
      * @var array
@@ -30,7 +40,7 @@ class AzureStorageConnectionFactory implements ConnectionFactory
 
     public function createContext(): Context
     {
-        $client = QueueRestProxy::createQueueService($this->config['connection_string']);
+        $client = QueueRestProxy::createQueueService($this->config[self::KEY_CONNECTION_STRING]);
 
         return new AzureStorageContext($client, $this->config);
     }
@@ -53,7 +63,7 @@ class AzureStorageConnectionFactory implements ConnectionFactory
         if (is_string($config)) {
             $config = self::parseDsn($config);
 
-            if (empty($config['connection_string'])) {
+            if (empty($config[self::KEY_CONNECTION_STRING])) {
                 throw new InvalidArgumentException('Configuration cannot be empty.');
             }
 
@@ -61,19 +71,19 @@ class AzureStorageConnectionFactory implements ConnectionFactory
         }
 
         if (is_array($config)) {
-            if (isset($config['dsn'])) {
-                $parsed = array_replace_recursive($configProto, self::parseDsn($config['dsn']));
+            if (isset($config[self::KEY_DSN])) {
+                $parsed = array_replace_recursive($configProto, self::parseDsn($config[self::KEY_DSN]));
 
                 // Support for old usage in Enqueue bundle, when schema has been 'azure:'
                 // and all other parameters had to be passed
-                if (!empty($parsed['connection_string'])) {
+                if (!empty($parsed[self::KEY_CONNECTION_STRING])) {
                     return $parsed;
                 }
 
-                unset($config['dsn']);
+                unset($config[self::KEY_DSN]);
             }
 
-            if (!empty($config['connection_string'])) {
+            if (!empty($config[self::KEY_CONNECTION_STRING])) {
                 return array_replace_recursive($configProto, $config);
             }
 
@@ -112,7 +122,7 @@ class AzureStorageConnectionFactory implements ConnectionFactory
         }
 
         $return = [
-            'connection_string' => $parsed->getPath()
+            self::KEY_CONNECTION_STRING => $parsed->getPath()
         ];
 
         foreach ($parsed->getQueryBag()->toArray() as $key => $val) {
