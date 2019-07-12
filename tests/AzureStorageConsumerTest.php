@@ -286,6 +286,11 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
         return $messageMock;
     }
 
+    /**
+     * Data provider for `testShouldFailOnReceiveNoWaitInvalidJsonMessage()`.
+     *
+     * @return array
+     */
     public function dpTestShouldFailOnReceiveNoWaitInvalidJsonMessage(): array
     {
         return [
