@@ -87,6 +87,24 @@ class AzureStorageProducerTest extends TestCase
         $producer->send($destination, $message);
     }
 
+    public function testGetPriority(): void
+    {
+        $producer = $this->getProducer();
+        $this->assertEquals(null, $producer->getPriority());
+    }
+
+    public function testGetDeliveryDelay(): void
+    {
+        $producer = $this->getProducer();
+        $this->assertEquals(null, $producer->getDeliveryDelay());
+    }
+
+    public function testSetTtl(): void
+    {
+        $producer = $this->getProducer();
+        $producer->setTimeToLive(100);
+        $this->assertEquals(100, $producer->getTimeToLive());
+    }
 
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject|QueueRestProxy

@@ -7,7 +7,6 @@ use Enqueue\Null\NullTopic;
 use Enqueue\AzureStorage\AzureStorageConsumer;
 use Enqueue\AzureStorage\AzureStorageContext;
 use Enqueue\AzureStorage\AzureStorageDestination;
-use Enqueue\AzureStorage\AzureStorageMessage;
 use Enqueue\AzureStorage\AzureStorageProducer;
 use Enqueue\Test\ClassExtensionTrait;
 use Interop\Queue\Context;
@@ -191,5 +190,12 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('The provider does not support purge queue.');
 
         $context->purgeQueue($this->createMock(Queue::class));
+    }
+
+    public function testClose()
+    {
+        // Close actually does nothing yet, so we just test, that it did not fail when called.
+        $context = new AzureStorageContext($this->createQueueRestProxyMock());
+        $context->close();
     }
 }
