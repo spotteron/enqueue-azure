@@ -2,7 +2,6 @@
 Azure Storage transport is a messaging solution transport using Azure comptabile with [Queue Interop](https://github.com/queue-interop/queue-interop) 
 
 [![Build Status](https://travis-ci.org/assoconnect/enqueue-azure.svg?branch=master)](https://travis-ci.org/assoconnect/enqueue-azure)
-[![Coverage Status](https://coveralls.io/repos/github/assoconnect/enqueue-azure/badge.svg?branch=master)](https://coveralls.io/github/assoconnect/enqueue-azure?branch=master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=assoconnect_enqueue-azure&metric=alert_status)](https://sonarcloud.io/dashboard?id=assoconnect_enqueue-azure)
 
 The transport uses [Azure Storage](https://docs.microsoft.com/en-us/azure/storage/queues/storage-dotnet-how-to-use-queues) as a message broker. 
