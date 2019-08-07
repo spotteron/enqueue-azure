@@ -17,6 +17,6 @@ before_script:
   - wget https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
   
 script:
+  - php phpcs.phar --standard=PSR12  ./tests ./src
   - vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml --log-junit ./tests/logs/phpunit.report.xml
-  - php phpcs.phar --standard=PSR12 --ignore=/vendor/* ./
   - 'if [ ! -z "$SONAR_TOKEN" ]; then sonar-scanner; fi'
