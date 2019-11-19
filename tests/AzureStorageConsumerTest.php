@@ -6,10 +6,10 @@ use Enqueue\AzureStorage\AzureStorageConsumer;
 use Enqueue\AzureStorage\AzureStorageContext;
 use Enqueue\AzureStorage\AzureStorageDestination;
 use Enqueue\AzureStorage\AzureStorageMessage;
-use Enqueue\AzureStorage\AzureStorageProducer;
 
 use Enqueue\Test\ClassExtensionTrait;
 use Interop\Queue\Consumer;
+use LogicException;
 use MicrosoftAzure\Storage\Queue\QueueRestProxy;
 use MicrosoftAzure\Storage\Queue\Models\ListMessagesOptions;
 use MicrosoftAzure\Storage\Queue\Models\ListMessagesResult;
@@ -181,6 +181,51 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * testShouldFailOnReceiveNoWaitInvalidJsonMessage.
+     *
+     * @param string $exceptionClass
+     * @param string $exceptionMessage
+     * @param string $messageText
+     *
+     * @dataProvider dpTestShouldFailOnReceiveNoWaitInvalidJsonMessage
+     */
+    public function testShouldFailOnReceiveNoWaitInvalidJsonMessage(
+        string $exceptionClass,
+        string $exceptionMessage,
+        string $messageText
+    ): void {
+        $this->expectException($exceptionClass);
+        $this->expectExceptionMessage($exceptionMessage);
+        $messageMock = $this->createQueueMessageMock(base64_encode($messageText));
+
+        $options = new ListMessagesOptions();
+        $options->setNumberOfMessages(1);
+
+        $listMessagesResultMock = $this->createMock(ListMessagesResult::class);
+        $listMessagesResultMock
+            ->expects($this->any())
+            ->method('getQueueMessages')
+            ->willReturn([$messageMock])
+        ;
+
+        $azureMock = $this->createQueueRestProxyMock();
+        $azureMock
+            ->expects($this->any())
+            ->method('listMessages')
+            ->with('aQueue', $options)
+            ->willReturn($listMessagesResultMock)
+        ;
+
+        $consumer = new AzureStorageConsumer(
+            $azureMock,
+            new AzureStorageDestination('aQueue'),
+            new AzureStorageContext($azureMock)
+        );
+
+        $consumer->receiveNoWait();
+    }
+
+    /**
      * @return \PHPUnit_Framework_MockObject_MockObject|QueueRestProxy
      */
     private function createQueueRestProxyMock()
@@ -189,9 +234,11 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @param string|null $messageText
+     *
      * @return \PHPUnit_Framework_MockObject_MockObject|QueueMessage
      */
-    private function createQueueMessageMock()
+    private function createQueueMessageMock(?string $messageText = null)
     {
         $insertionDateMock = $this->createMock(\DateTime::class);
         $insertionDateMock
@@ -201,6 +248,7 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
 
         $message = new AzureStorageMessage();
         $message->setBody('aBody');
+        $messageText = $messageText ?? $message->getMessageText();
 
         $messageMock = $this->createMock(QueueMessage::class);
         $messageMock
@@ -210,7 +258,7 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
         $messageMock
             ->expects($this->any())
             ->method('getMessageText')
-            ->willReturn($message->getMessageText());
+            ->willReturn($messageText);
         $messageMock
             ->expects($this->any())
             ->method('getInsertionDate')
@@ -236,5 +284,32 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
             ->method('getTimeNextVisible')
             ->willReturn('any');
         return $messageMock;
+    }
+
+    /**
+     * Data provider for `testShouldFailOnReceiveNoWaitInvalidJsonMessage()`.
+     *
+     * @return array
+     */
+    public function dpTestShouldFailOnReceiveNoWaitInvalidJsonMessage(): array
+    {
+        return [
+            'invalid JSON' => [
+                LogicException::class,
+                'Invalid JSON content for the message.'
+                . ' Error was: "Syntax error" and message content is: "invalidJSON".',
+                'invalidJSON'
+            ],
+            'no body' => [
+                LogicException::class,
+                'Missing body in the message.',
+                '[]'
+            ],
+            'no properties' => [
+                LogicException::class,
+                'Missing properties in the message.',
+                '{"body": ""}'
+            ],
+        ];
     }
 }

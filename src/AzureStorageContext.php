@@ -55,8 +55,6 @@ class AzureStorageContext implements Context
 
     public function createQueue(string $queueName): Queue
     {
-        $this->client->createQueue($queueName);
-
         return new AzureStorageDestination($queueName);
     }
 
