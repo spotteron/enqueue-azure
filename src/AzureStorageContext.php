@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace Enqueue\AzureStorage;
 
+use Exception;
 use Interop\Queue\Consumer;
 use Interop\Queue\Context;
 use Interop\Queue\Destination;
+use Interop\Queue\Exception\Exception as InteropException;
 use Interop\Queue\Exception\InvalidDestinationException;
 use Interop\Queue\Exception\PurgeQueueNotSupportedException;
 use Interop\Queue\Exception\SubscriptionConsumerNotSupportedException;
@@ -46,15 +48,35 @@ class AzureStorageContext implements Context
         return $message;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws InteropException Thrown, when topic creation fails.
+     */
     public function createTopic(string $topicName): Topic
     {
-        $this->client->createQueue($topicName);
+        try {
+            $this->client->createQueue($topicName);
+        } catch (Exception $e) {
+            $this->handleQueueCreationException($e);
+        }
 
         return new AzureStorageDestination($topicName);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws InteropException Thrown, when queue creation fails.
+     */
     public function createQueue(string $queueName): Queue
     {
+        try {
+            $this->client->createQueue($queueName);
+        } catch (Exception $e) {
+            $this->handleQueueCreationException($e);
+        }
+
         return new AzureStorageDestination($queueName);
     }
 
@@ -134,5 +156,34 @@ class AzureStorageContext implements Context
 
     public function close(): void
     {
+    }
+
+    /**
+     * Handle queue creation exception.
+     *
+     * @param Exception $e
+     *
+     * @throws InteropException
+     *
+     * @see https://docs.microsoft.com/en-us/rest/api/storageservices/create-queue4#remarks
+     * @see https://docs.microsoft.com/en-us/rest/api/storageservices/queue-service-error-codes
+     */
+    private function handleQueueCreationException(Exception $e): void
+    {
+        // If we have 409 response code, it indicates a conflict between new queue and queue already present in Azure.
+        // This error should be silenced for now.
+        // @see https://docs.microsoft.com/en-us/rest/api/storageservices/create-queue4#remarks
+        // TODO: Prepare more elaborate checks for error 409, as sometimes it may be desirable to throw it.
+
+        if ($e->getCode() === 409) {
+            return;
+        }
+
+        // Every other error indicates problems with transport, and, as such, it should be thrown.
+        // Error is wrapped with common Queue interop Exception class, because throwing generic Exceptions
+        // is bad for error catching upwards.
+        // TODO: Create own exception class, for even better error handling possibilities.
+
+        throw new InteropException($e->getMessage(), $e->getCode(), $e);
     }
 }
