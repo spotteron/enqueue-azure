@@ -6,7 +6,6 @@ use Enqueue\AzureStorage\AzureStorageConsumer;
 use Enqueue\AzureStorage\AzureStorageContext;
 use Enqueue\AzureStorage\AzureStorageDestination;
 use Enqueue\AzureStorage\AzureStorageMessage;
-
 use Enqueue\Test\ClassExtensionTrait;
 use Interop\Queue\Consumer;
 use LogicException;

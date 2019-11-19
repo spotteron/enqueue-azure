@@ -22,7 +22,7 @@ class AzureStorageProducerTest extends TestCase
 {
     use ClassExtensionTrait;
 
-    public function getProducer():AzureStorageProducer
+    public function getProducer(): AzureStorageProducer
     {
         return new AzureStorageProducer($this->createQueueRestProxyMock());
     }
