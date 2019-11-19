@@ -10,6 +10,7 @@ use Enqueue\AzureStorage\AzureStorageDestination;
 use Enqueue\AzureStorage\AzureStorageProducer;
 use Enqueue\Test\ClassExtensionTrait;
 use Interop\Queue\Context;
+use Interop\Queue\Exception;
 use Interop\Queue\Exception\PurgeQueueNotSupportedException;
 use Interop\Queue\Message;
 use Interop\Queue\Exception\InvalidDestinationException;
@@ -17,8 +18,9 @@ use Interop\Queue\Exception\TemporaryQueueNotSupportedException;
 use Interop\Queue\Exception\SubscriptionConsumerNotSupportedException;
 use Interop\Queue\Queue;
 use MicrosoftAzure\Storage\Queue\QueueRestProxy;
+use PHPUnit\Framework\TestCase;
 
-class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
+class AzureStorageContextTest extends TestCase
 {
     use ClassExtensionTrait;
 
@@ -63,6 +65,34 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('aQueue', $queue->getQueueName());
     }
 
+    public function testShouldCreateQueueThrowException()
+    {
+        $this->expectException(Exception::class);
+        $restMock = $this->createQueueRestProxyMock();
+        $restMock
+            ->expects($this->once())
+            ->method('createQueue')
+            ->willThrowException(new \Exception('Test'));
+        $context = new AzureStorageContext($restMock);
+
+        $context->createQueue('aQueue');
+    }
+
+    public function testShouldCreateQueueSilenceException()
+    {
+        $restMock = $this->createQueueRestProxyMock();
+        $restMock
+            ->expects($this->once())
+            ->method('createQueue')
+            ->willThrowException(new \Exception('Test', 409));
+        $context = new AzureStorageContext($restMock);
+
+        $queue = $context->createQueue('aQueue');
+
+        $this->assertInstanceOf(AzureStorageDestination::class, $queue);
+        $this->assertSame('aQueue', $queue->getQueueName());
+    }
+
     public function testShouldAllowCreateTopic()
     {
         $context = new AzureStorageContext($this->createQueueRestProxyMock());
@@ -71,6 +101,34 @@ class AzureStorageContextTest extends \PHPUnit\Framework\TestCase
 
         $this->assertInstanceOf(AzureStorageDestination::class, $topic);
         $this->assertSame('aTopic', $topic->getTopicName());
+    }
+
+    public function testShouldCreateTopicThrowException()
+    {
+        $this->expectException(Exception::class);
+        $restMock = $this->createQueueRestProxyMock();
+        $restMock
+            ->expects($this->once())
+            ->method('createQueue')
+            ->willThrowException(new \Exception('Test'));
+        $context = new AzureStorageContext($restMock);
+
+        $context->createTopic('aTopic');
+    }
+
+    public function testShouldCreateTopicSilenceException()
+    {
+        $restMock = $this->createQueueRestProxyMock();
+        $restMock
+            ->expects($this->once())
+            ->method('createQueue')
+            ->willThrowException(new \Exception('Test', 409));
+        $context = new AzureStorageContext($restMock);
+
+        $queue = $context->createTopic('aTopic');
+
+        $this->assertInstanceOf(AzureStorageDestination::class, $queue);
+        $this->assertSame('aTopic', $queue->getQueueName());
     }
 
     public function testThrowNotImplementedOnCreateTmpQueueCall()
