@@ -10,7 +10,7 @@ use Interop\Queue\Message;
 class AzureStorageMessage implements Message
 {
     use MessageTrait;
-    
+
     public function __construct(string $body = '', array $properties = [], array $headers = [])
     {
         $this->body = $body;

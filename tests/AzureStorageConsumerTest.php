@@ -131,7 +131,7 @@ class AzureStorageConsumerTest extends \PHPUnit\Framework\TestCase
             ->with('aQueue', $messageMock->getMessageText())
             ->willReturn($createMessageResultMock)
         ;
- 
+
         $consumer = new AzureStorageConsumer(
             $azureMock,
             new AzureStorageDestination('aQueue'),

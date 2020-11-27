@@ -16,12 +16,12 @@ class AzureStorageConnectionFactory implements ConnectionFactory
      * Configuration key for connection string.
      */
     private const KEY_CONNECTION_STRING = 'connection_string';
-    
+
     /**
      * Configuration key for DSN.
      */
     private const KEY_DSN = 'dsn';
-    
+
     /**
      * Factory configuration.
      *

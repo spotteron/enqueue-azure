@@ -81,7 +81,7 @@ class AzureStorageProducerTest extends TestCase
             ->with('aDestination', $message->getMessageText())
             ->willReturn($createMessageResult)
         ;
-        
+
         $producer = new AzureStorageProducer($queueRestProxy);
 
         $producer->send($destination, $message);
@@ -124,7 +124,7 @@ class AzureStorageProducerTest extends TestCase
             ->expects($this->any())
             ->method('getTimestamp')
             ->willReturn(1542809366);
-        
+
         $messageMock = $this->createMock(QueueMessage::class);
         $messageMock
             ->expects($this->any())
