@@ -29,19 +29,23 @@ class AzureStorageConnectionFactory implements ConnectionFactory
      */
     protected $config;
 
+
+    private $clientConfig;
+
     /**
      * Class constructor.
      *
      * @param array|string|null $config
      */
-    public function __construct($config)
+    public function __construct($config, $clientConfig = array())
     {
         $this->config = self::transformConfiguration($config);
+        $this->clientConfig = $clientConfig;
     }
 
     public function createContext(): Context
     {
-        $client = QueueRestProxy::createQueueService($this->config[self::KEY_CONNECTION_STRING]);
+        $client = QueueRestProxy::createQueueService($this->config[self::KEY_CONNECTION_STRING], $this->clientConfig);
 
         return new AzureStorageContext($client, $this->config);
     }
