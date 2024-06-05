@@ -108,7 +108,7 @@ class AzureStorageConnectionFactory implements ConnectionFactory
             $dsn = 'azure:' . $dsn;
         }
 
-        $parsed = Dsn::parseFirst($dsn);
+        $parsed = AzureDsn::parseFirst($dsn);
 
         // Tis place ignores coverage, as it seems impossible to invoke using Dsn class
         // @codeCoverageIgnoreStart
