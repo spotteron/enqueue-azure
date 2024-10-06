@@ -25,6 +25,8 @@ class AzureStorageConsumer implements Consumer
 
     protected $queue;
 
+    protected $context;
+
     public function __construct(QueueRestProxy $client, AzureStorageDestination $queue, AzureStorageContext $context)
     {
         $this->client = $client;
